@@ -1,4 +1,7 @@
 function Game( canvas ){
+	
+	GameObject.call(this);
+	
 	var game = this;
 	
 	this.canvas = canvas;
@@ -10,12 +13,14 @@ function Game( canvas ){
 	this.keyboardControls = {};
 	
 	this.map = [];
-	
+	this.message = "message from the game";
 	setInterval("game.tick();",1000/60);
 	
 };
+Game.prototype = new GameObject();
 Game.prototype.tick = function (){
 	this.render();
+	this.checkTimedEvents(new Date().getTime());
 	console.log("tick");
 };
 
