@@ -26,7 +26,7 @@ Game.prototype.tick = function (){
 
 Game.prototype.render = function (){
 	this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-	this.ctx.fillStyle = "red";
+	this.ctx.fillStyle = "#CCDCE6";
 	this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
 	var length = this.map.length;
 	for(var i =0;i < length;i++){
