@@ -12,8 +12,6 @@ function Eventhandler( game ){
 Eventhandler.prototype.resolveMouse = function (ev){
 	if(this.game.mouseControls[ev.button] !== undefined)
 		this.game.mouseControls[ev.button](ev.clientX,ev.clientY);
-	console.log(ev);
-	console.log(ev.button);
 };
 Eventhandler.prototype.resolveKeyboard = function (ev){
 	if(this.game.keyboardControls[ev] !== undefined)

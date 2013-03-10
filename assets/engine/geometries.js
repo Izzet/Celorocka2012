@@ -1,37 +1,34 @@
 function Hexagon(position,a,options){
 	GUIObject.call(this);
 	
+	this.actions.onClick = options.onClick === undefined ? [] : options.onClick;
+	
 	this.position = position;
 	this.a = a;
 	this.v = Math.sqrt(3)*a/2;
 	
 	this.boundingRadius = Math.sqrt(3*Math.sqrt(3)/(2*Math.PI))*a;
 	this.boundingColor = options.boundingColor === undefined ? "#ff0000" : options.boundingColor;
-	this.boundingRenderable = options.boundingRenderable === undefined ? false : options.boundingRenderable;
-	this.add(new Circle(new Vector2(0,0),this.boundingRadius,{color:this.boundingColor}));
-	this.boundingCircle = this.children[0];
-	this.boundingCircle.renderable = this.boundingRenderable;
+	this.boundingCircle = new Circle(new Vector2(0,0),this.boundingRadius,{color:this.boundingColor});
+	this.boundingCircle.renderable = options.boundingRenderable === undefined ? false : options.boundingRenderable;
 	
 	//Zde se vyhodnotí vlastnosti dle typu
 	this.type = options.type === undefined ? "plains" : options.type;
-	switch (this.type){
-		case "plains":
-			this.color="#FFFAB3";
-			break;
-		case "swamps":
-			this.color="#575323";
-			break;
-		case "forest":
-			this.color="#398A19";
-			break;
-	}
+	this.switchType(this.type);
 	this.riveredSides = 0; //To znamená žádná
+	
+	
 	
 	this.render = function (ctx){
 		
 		var x = this.position.x;
 		var y = this.position.y;
-		
+		ctx.save();
+		ctx.translate(x,y);
+		if(this.boundingCircle.renderable){
+			this.boundingCircle.render(ctx);
+		}
+		ctx.restore();
 		ctx.beginPath();
 		ctx.moveTo(x,y);
 		ctx.moveTo(x-this.a,y);
@@ -47,9 +44,28 @@ function Hexagon(position,a,options){
 		if(this.riveredSides !== 0){
 			this.riverRender(ctx);
 		}
+		
 	};
 };
 Hexagon.prototype = new GUIObject();
+Hexagon.prototype.switchType = function (type){
+	switch (type){
+		case "plains":
+			this.color="#FFFAB3";
+			break;
+		case "swamps":
+			this.color="#575323";
+			break;
+		case "forest":
+			this.color="#398A19";
+			break;
+		case "dark":
+			this.color="#000000";
+			break;
+		default :
+			console.log("No such type");
+	}
+};
 
 function Circle(position,r,options){
 	GUIObject.call(this);
@@ -71,7 +87,7 @@ function Circle(position,r,options){
 };
 Circle.prototype = new GUIObject();
 
-function HexagonField(positionOfFirst,inRow,rows,a,optionsOfHexagons,oddIsFirst){
+function HexagonField(positionOfFirst,inRow,rows,a,hexOnClick,oddIsFirst){
 	GUIObject.call(this);
 	
 	this.position = positionOfFirst;
@@ -99,7 +115,7 @@ function HexagonField(positionOfFirst,inRow,rows,a,optionsOfHexagons,oddIsFirst)
 			this.add(new Hexagon(
 				new Vector2(i*3/2*a,j*2*v+prefix),
 				a,
-				{type:poleTypu[Math.round(Math.random()*3)]}
+				{onClick:hexOnClick,type:poleTypu[Math.round(Math.random()*3)]}
 			));
 		};
 		this.rows.push(row);
