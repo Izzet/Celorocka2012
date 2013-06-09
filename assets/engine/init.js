@@ -24,5 +24,11 @@ function init(id){
 	});
 	
 	game = new Game( canvas );
+	game.add(new HexagonGame({
+		position : new Vector2(0,0),
+		a : 100,
+		renderStyle : "fill",
+		color : "#00ff00"
+	}));
 	return true;
 };

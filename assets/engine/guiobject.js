@@ -10,24 +10,24 @@ function GUIObject(){
 	this.render = function (ctx){
 	};
 	
-	this.renderChildren = function (ctx){
-		ctx.save();
-		ctx.translate(this.position.x,this.position.y);
-		ctx.rotate(this.rotation);
-		for(var i =0;i<this.children.length;i++){
-			if(this.children[i].renderable === false) continue;
-			this.children[i].render(ctx);
-			this.children[i].renderChildren(ctx);
-		};
-		ctx.restore();
-	};
-	
 	this.actions = {
 		onClick : [],
 		onKeyDown : []
 	};
 };
 GUIObject.prototype = new GameObject();
+
+GUIObject.prototype.renderChildren = function (ctx){
+	ctx.save();
+	ctx.translate(this.position.x,this.position.y);
+	ctx.rotate(this.rotation);
+	for(var i =0;i<this.children.length;i++){
+		if(this.children[i].renderable === false) continue;
+		this.children[i].render(ctx);
+		this.children[i].renderChildren(ctx);
+	};
+	ctx.restore();
+};
 
 GUIObject.prototype.mouseHandle = function (button,cX,cY){
 	var clientX = cX-this.position.x;

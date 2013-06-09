@@ -5,7 +5,7 @@ function Hexagon(position,a,options){
 	
 	this.position = position;
 	this.a = a;
-	this.v = Math.sqrt(3)*a/2;
+	this.v = Math.sqrt(3)*this.a/2;
 	
 	this.boundingRadius = Math.sqrt(3*Math.sqrt(3)/(2*Math.PI))*a;
 	this.boundingColor = options.boundingColor === undefined ? "#ff0000" : options.boundingColor;
@@ -66,6 +66,58 @@ Hexagon.prototype.switchType = function (type){
 			console.log("No such type");
 	}
 };
+function CircleGame(options){
+	
+	Geometrie.call( this, options );
+	
+	this.onclick = options.onclick === undefined ? function (){} : options.onclick;
+	
+	this.r = options.radius === undefined ? 10 : options.radius;
+	
+};
+CircleGame.prototype = Object.create( Geometrie.prototype );
+CircleGame.prototype.drawPath = function (ctx){
+	ctx.arc(this.position.x,this.position.y,this.r,0,Math.PI*2,0);
+};
+
+function HexagonGame (options){
+		
+	Geometrie.call(this, options);
+	
+	this.onclick = options.onclick === undefined ? function (){} : options.onclick;
+	
+	this.a = options.a === undefined ? 10 : options.a;
+	this.v = Math.sqrt(3)*this.a/2;
+	var bR = 0;
+	this.boundingRadius = bR = Math.sqrt(3*Math.sqrt(3)/(2*Math.PI))*this.a;
+	this.boundingCircle = new CircleGame({
+		radius: bR,
+		renderable : true,
+		color : "#000000",
+		renderStyle : "stroke",
+	});
+	
+};
+HexagonGame.prototype = Object.create( Geometrie.prototype );
+HexagonGame.prototype.drawPath = function (ctx){
+	var x = this.position.x;
+	var y = this.position.y;
+	ctx.moveTo(x,y);
+	ctx.moveTo(x-this.a,y);
+	ctx.lineTo((x-this.a/2),y-this.v);
+	ctx.lineTo((x+this.a/2),y-this.v);
+	ctx.lineTo((x+this.a),y);
+	ctx.lineTo((x+this.a/2),y+this.v);
+	ctx.lineTo((x-this.a/2),y+this.v);
+	ctx.lineTo((x-this.a),y);
+};
+HexagonGame.prototype.render = function (ctx){
+	Geometrie.prototype.render.call(this, ctx);
+	ctx.save();
+	ctx.translate(this.position.x,this.position.y);
+	this.boundingCircle.render(ctx);
+	ctx.restore();
+};
 
 function Circle(position,r,options){
 	GUIObject.call(this);
@@ -122,3 +174,41 @@ function HexagonField(positionOfFirst,inRow,rows,a,hexOnClick,oddIsFirst){
 	};
 };
 HexagonField.prototype = new GUIObject();
+
+function Text(options){
+	GUIObject.call(this);
+	this.value = options.value !== undefined ? options.value : "";
+	this.position = options.position !== undefined ? options.position : new Vector2(0,0);
+	this.rotation = options.rotation !== undefined ? options.rotation : 0;
+	this.dimension = options.dimension !== undefined ? options.dimension : new Vector2(0,0);
+	this.color = options.color !== undefined ? options.color : "#000000";
+	this.size = options.size !== undefined ? options.size : 20;
+	this.font = options.font !== undefined ? options.font : "sans-serif";
+	
+	this.render = function (ctx){
+		ctx.fillStyle = this.color;
+		ctx.font = this.size+"px "+this.font;
+		ctx.textBaseline = "top";
+		ctx.fillText(this.value,this.position.x,this.position.y);
+	};
+};
+Text.prototype = new GUIObject();
+
+
+function Button (options){
+	GUIObject.call(this);
+	
+	this.position = options.position !== undefined ? options.position : new Vector2(0,0);
+	this.rotation = options.rotation !== undefined ? options.rotation : 0;
+	this.dimension = options.dimension !== undefined ? options.dimension : new Vector2(0,0);
+	this.color = options.color !== undefined ? options.color : "#FFFFFF";
+	var text = options.text !== undefined ? options.text : new Text({});
+	this.add(text);
+	this.onClick = options.onClick !== undefined ? options.onClick : [new EventAction({})];
+	
+	this.render = function (ctx){console.log("běží");
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.position.x,this.position.y,this.dimension.x,this.dimension.y);
+	};
+};
+Button.prototype = new GUIObject();

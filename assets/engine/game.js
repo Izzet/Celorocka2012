@@ -22,13 +22,14 @@ function Game( canvas ){
 };
 Game.prototype = new GameObject();
 Game.prototype.tick = function (){
-	this.render();
+	this.render( this.ctx );
 	this.checkTimedEvents(new Date().getTime());
+	this.tickChildren( this.ctx );
 };
 
-Game.prototype.render = function (){
-	this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-	this.ctx.fillStyle = "#CCDCE6";
-	this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
-	this.gui.render(this.ctx);
+Game.prototype.render = function ( ctx ){
+	ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+	ctx.fillStyle = "#CCDCE6";
+	ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+	this.gui.render(ctx);
 };
