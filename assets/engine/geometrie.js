@@ -29,3 +29,18 @@ Geometrie.prototype.render = function ( ctx ){
 	ctx.closePath();
 	ctx.restore();
 };
+Geometrie.prototype.mouseHandle = function (button,cX,cY){
+	var clientX = cX-this.position.x;
+	var clientY = cY-this.position.y;
+	var point = new Vector2(clientX,clientY);
+	if(this.onclick !== undefined && this.pointIn(point)){
+		this.onclick(button,clientX,clientY);
+	}
+	
+	for(var i in this.children){
+		this.children[i].mouseHandle(button,clientX,clientY);
+	};
+};
+Geometrie.prototype.pointIn = function (point){
+	return false;
+};

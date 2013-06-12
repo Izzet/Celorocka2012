@@ -6,25 +6,31 @@ function GUIObject(){
 	this.dimension = new Vector2(0,0);
 	
 	this.rotation = 0;
-	
-	this.render = function (ctx){
-	};
-	
-	this.actions = {
-		onClick : [],
-		onKeyDown : []
-	};
+
 };
 GUIObject.prototype = new GameObject();
 
-GUIObject.prototype.renderChildren = function (ctx){
+GUIObject.prototype.render = function (ctx){
+};
+
+GUIObject.prototype.onclick = function (button, cX,cY){
+	return false;
+};
+
+GUIObject.prototype.pointIn = function (point){
+	return false;
+};
+
+GUIObject.prototype.tickChildren = function (ctx){
 	ctx.save();
 	ctx.translate(this.position.x,this.position.y);
 	ctx.rotate(this.rotation);
 	for(var i =0;i<this.children.length;i++){
-		if(this.children[i].renderable === false) continue;
-		this.children[i].render(ctx);
-		this.children[i].renderChildren(ctx);
+		if(this.children[i].renderable !== false){
+			this.children[i].render(ctx);
+		}
+		this.children[i].tick();
+		this.children[i].tickChildren(ctx);
 	};
 	ctx.restore();
 };
@@ -32,13 +38,9 @@ GUIObject.prototype.renderChildren = function (ctx){
 GUIObject.prototype.mouseHandle = function (button,cX,cY){
 	var clientX = cX-this.position.x;
 	var clientY = cY-this.position.y;
-	var saveEv = {button:button,clientX:clientX,clientY:clientY};
-	if(this.actions.onClick.length > 0){
-		for(var i in this.actions.onClick){
-			if(this.actions.onClick[i].condition(saveEv,this)){ // Vrácení mateřského objektu a podmínka
-				this.actions.onClick[i].reaction(saveEv,this);
-			}
-		};
+	var point = new Vector2(clientX,clientY);
+	if(this.onclick !== undefined && this.pointIn(point)){
+		this.onclick(button,clientX,clientY);
 	}
 	
 	for(var i in this.children){

@@ -25,10 +25,11 @@ function init(id){
 	
 	game = new Game( canvas );
 	game.add(new HexagonGame({
-		position : new Vector2(0,0),
-		a : 100,
+		position : new Vector2(50,50),
+		a : 50,
 		renderStyle : "fill",
-		color : "#00ff00"
+		color : "#00ff00",
+		onclick : function (){console.log("ole");}
 	}));
 	return true;
 };

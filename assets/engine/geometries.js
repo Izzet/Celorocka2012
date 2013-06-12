@@ -79,6 +79,12 @@ CircleGame.prototype = Object.create( Geometrie.prototype );
 CircleGame.prototype.drawPath = function (ctx){
 	ctx.arc(this.position.x,this.position.y,this.r,0,Math.PI*2,0);
 };
+CircleGame.prototype.pointIn = function (point){
+	if(point.x*point.x+point.y*point.y <= this.r*this.r){
+		return true;
+	}
+	else return false;
+};
 
 function HexagonGame (options){
 		
@@ -93,7 +99,7 @@ function HexagonGame (options){
 	this.boundingCircle = new CircleGame({
 		radius: bR,
 		renderable : true,
-		color : "#000000",
+		color : "#ff0000",
 		renderStyle : "stroke",
 	});
 	
@@ -117,6 +123,9 @@ HexagonGame.prototype.render = function (ctx){
 	ctx.translate(this.position.x,this.position.y);
 	this.boundingCircle.render(ctx);
 	ctx.restore();
+};
+HexagonGame.prototype.pointIn = function (point){
+	return this.boundingCircle.pointIn(point);
 };
 
 function Circle(position,r,options){
