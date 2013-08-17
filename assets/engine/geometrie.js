@@ -5,6 +5,7 @@ function Geometrie(options){
 	
 	this.renderStyle = options.renderStyle === undefined ? "stroke" : options.renderStyle;
 	this.color = options.color === undefined ? "#000000" : options.color;
+	this.alpha = options.alpha === undefined ? 1 : options.alpha;
 	this.renderable = options.renderable === undefined ? true : options.renderable;
 };
 Geometrie.prototype = Object.create( GameObject.prototype );
@@ -18,6 +19,7 @@ Geometrie.prototype.render = function ( ctx ){
 		return;
 	ctx.save();
 	ctx.fillStyle = this.color;
+	ctx.globalAlpha = this.alpha;
 	ctx.beginPath();
 	this.drawPath(ctx);
 	if(this.renderStyle == "stroke"){

@@ -24,6 +24,9 @@ function init(id){
 	});
 	
 	game = new Game( canvas );
+	
+	// Toliko oficiální init
+	
 	game.add(new HexagonGame({
 		position : new Vector2(50,50),
 		a : 50,
@@ -31,5 +34,16 @@ function init(id){
 		color : "#00ff00",
 		onclick : function (){console.log("ole");}
 	}));
+	var tile = new Tile ({
+		hexagon : {
+			position : new Vector2(200,100),
+			color : "#ff0000",
+			a : 75,
+			renderStyle : "fill",
+		},
+		blinkTime : 0.01,
+	});
+	tile.blinking = true;
+	game.add( tile );
 	return true;
 };
